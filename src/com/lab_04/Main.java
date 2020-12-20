@@ -6,6 +6,7 @@ import com.lab_04.command.Command;
 import com.lab_04.command.Program.*;
 import com.lab_04.command.Device.*;
 import com.lab_04.command.Lamp.*;
+import com.lab_04.command.Fridge.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -88,7 +89,8 @@ public class Main {
 
         return switch (op) {
             case SDT_LAMP   -> new CreateLampCommand(_in, _deviceList);
-            default         -> null;
+            case SDT_FRIDGE -> new CreateFridgeCommand(_in, _deviceList);
+            default -> null;
         };
     }
 
@@ -119,7 +121,8 @@ public class Main {
 
         return switch (op) {
             case SDT_LAMP   -> updateLampMenu(id);
-            default         -> null;
+            case SDT_FRIDGE -> updateFridgeMenu(id);
+            default -> null;
         };
     }
 
@@ -168,6 +171,24 @@ public class Main {
             default:
                 return null;
         }
+    }
+
+    private static Command updateFridgeMenu(int id) {
+        String help = getFridgeMenuHelp();
+        System.out.println(help);
+
+        int choice = _in.nextInt();
+        _in.nextLine();
+
+        FridgeMenuOp op = FridgeMenuOp.fromCmd(choice);
+
+        return switch (op) {
+            case UM_FRIDGE_TURN_ON          -> new DeviceTurnOnCommand(id, _deviceList);
+            case UM_FRIDGE_TURN_OFF         -> new DeviceTurnOffCommand(id, _deviceList);
+            case UM_FRIDGE_INC_TEMPERATURE  -> new FridgeIncrementTemperatureCommand(id, _deviceList);
+            case UM_FRIDGE_DEC_TEMPERATURE  -> new FridgeDecrementTemperatureCommand(id, _deviceList);
+            default -> null;
+        };
     }
 
     private static SelectDeviceTypeOp selectDeviceTypeMenu() {
@@ -224,7 +245,8 @@ public class Main {
 
     private static String getSelectDeviceTypeMenuHelp() {
         return  "\nSelect device type:\n" +
-                SelectDeviceTypeOp.SDT_LAMP.getCmd() + " - lamp";
+                SelectDeviceTypeOp.SDT_LAMP.getCmd()    + " - lamp"     + "\n" +
+                SelectDeviceTypeOp.SDT_FRIDGE.getCmd()  + " - fridge";
     }
 
     private static String getSelectDeviceIdMenuHelp() {
@@ -246,5 +268,13 @@ public class Main {
                 LampMenuOp.UM_LAMP_DEC_BRIGHTNESS.getCmd()  + " - decrement brightness"     + "\n" +
                 LampMenuOp.UM_LAMP_SCHED_TURN_ON.getCmd()   + " - schedule turn on"         + "\n" +
                 LampMenuOp.UM_LAMP_SCHED_TURN_OFF.getCmd()  + " - schedule turn off";
+    }
+
+    private static String getFridgeMenuHelp() {
+        return  "\nWhat do you want to change?\n" +
+                FridgeMenuOp.UM_FRIDGE_TURN_ON.getCmd()         + " - turn on"                  + "\n" +
+                FridgeMenuOp.UM_FRIDGE_TURN_OFF.getCmd()        + " - turn off"                 + "\n" +
+                FridgeMenuOp.UM_FRIDGE_INC_TEMPERATURE.getCmd() + " - increment temperature"    + "\n" +
+                FridgeMenuOp.UM_FRIDGE_DEC_TEMPERATURE.getCmd() + " - decrement temperature";
     }
 }

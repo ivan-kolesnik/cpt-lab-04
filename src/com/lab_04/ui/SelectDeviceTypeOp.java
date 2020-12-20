@@ -1,8 +1,10 @@
 package com.lab_04.ui;
 
 public enum SelectDeviceTypeOp {
-    SDT_LAMP(0),
-    SDT_NOT_FOUND(1);
+    SDT_LAMP      (0),
+    SDT_FRIDGE    (1),
+
+    SDT_NOT_FOUND (2);
 
     private final int _cmd;
 

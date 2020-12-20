@@ -1,9 +1,10 @@
 package com.lab_04.ui;
 
 public enum ShowMenuOp {
-    SM_BY_ID(0),
-    SM_ALL(1),
-    SM_NOT_FOUND(2);
+    SM_BY_ID     (0),
+    SM_ALL       (1),
+
+    SM_NOT_FOUND (2);
 
     private final int _cmd;
 

@@ -10,9 +10,7 @@ public class Lamp extends Device {
     private final int[] _colorTemperatureArr;
 
     private int _brightness;
-    private int _colorTemperature;
-
-    private int _colorTemperatureArrIndex;
+    private int _colorTemperatureIndex;
 
     public static class Builder extends Device.Builder<Builder> {
         private int _minBrightness;
@@ -67,10 +65,9 @@ public class Lamp extends Device {
         _colorTemperatureArr = builder._colorTemperatureArr;
         Arrays.sort(_colorTemperatureArr);
 
-        _brightness = (_minBrightness + _maxBrightness) / 2;
+        _colorTemperatureIndex = 0;
 
-        _colorTemperatureArrIndex = 0;
-        _colorTemperature = _colorTemperatureArr[_colorTemperatureArrIndex];
+        _brightness = (_minBrightness + _maxBrightness) / 2;
     }
 
     public int getMinBrightness() {
@@ -86,25 +83,21 @@ public class Lamp extends Device {
     }
 
     public int getColorTemperature() {
-        return _colorTemperature;
+        return _colorTemperatureArr[_colorTemperatureIndex];
     }
 
     public void nextColorTemperature() {
-        _colorTemperatureArrIndex += 1;
-        if (_colorTemperatureArrIndex >= _colorTemperatureArr.length) {
-            _colorTemperatureArrIndex = 0;
+        _colorTemperatureIndex += 1;
+        if (_colorTemperatureIndex >= _colorTemperatureArr.length) {
+            _colorTemperatureIndex = 0;
         }
-
-        _colorTemperature = _colorTemperatureArr[_colorTemperatureArrIndex];
     }
 
     public void prevColorTemperature() {
-        _colorTemperatureArrIndex -= 1;
-        if (_colorTemperatureArrIndex < 0) {
-            _colorTemperatureArrIndex = _colorTemperatureArr.length;
+        _colorTemperatureIndex -= 1;
+        if (_colorTemperatureIndex < 0) {
+            _colorTemperatureIndex = _colorTemperatureArr.length;
         }
-
-        _colorTemperature = _colorTemperatureArr[_colorTemperatureArrIndex];
     }
 
     public int getBrightness() {

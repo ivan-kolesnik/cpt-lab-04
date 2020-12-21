@@ -8,6 +8,7 @@ import com.lab_04.command.Device.*;
 import com.lab_04.command.Lamp.*;
 import com.lab_04.command.Fridge.*;
 import com.lab_04.command.Stove.*;
+import com.lab_04.command.TV.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -91,7 +92,8 @@ public class Main {
         return switch (op) {
             case SDT_LAMP   -> new CreateLampCommand(_in, _deviceList);
             case SDT_FRIDGE -> new CreateFridgeCommand(_in, _deviceList);
-            case SDT_STOVE -> new CreateStoveCommand(_in, _deviceList);
+            case SDT_STOVE  -> new CreateStoveCommand(_in, _deviceList);
+            case SDT_TV     -> new CreateTVCommand(_in, _deviceList);
             default -> null;
         };
     }
@@ -124,7 +126,8 @@ public class Main {
         return switch (op) {
             case SDT_LAMP   -> updateLampMenu(id);
             case SDT_FRIDGE -> updateFridgeMenu(id);
-            case SDT_STOVE -> updateStoveMenu(id);
+            case SDT_STOVE  -> updateStoveMenu(id);
+            case SDT_TV     -> updateTVMenu(id);
             default -> null;
         };
     }
@@ -220,6 +223,44 @@ public class Main {
         }
     }
 
+    private static Command updateTVMenu(int id) {
+        String help = getTVMenuHelp();
+        System.out.println(help);
+
+        int choice = _in.nextInt();
+        _in.nextLine();
+
+        TVMenuOp op = TVMenuOp.fromCmd(choice);
+        Date date;
+
+        switch (op) {
+            case UM_TV_TURN_ON:
+                return new DeviceTurnOnCommand(id, _deviceList);
+            case UM_TV_TURN_OFF:
+                return new DeviceTurnOffCommand(id, _deviceList);
+            case UM_TV_NEXT_CHANNEL:
+                return new TVNextChannelCommand(id, _deviceList);
+            case UM_TV_PREV_CHANNEL:
+                return new TVPrevChannelCommand(id, _deviceList);
+            case UM_TV_SCHED_TURN_ON:
+                date = selectDateMenu();
+                if (date == null) {
+                    return null;
+                }
+
+                return new DeviceScheduledTurnOnCommand(id, _deviceList, date);
+            case UM_TV_SCHED_TURN_OFF:
+                date = selectDateMenu();
+                if (date == null) {
+                    return null;
+                }
+
+                return new DeviceScheduledTurnOffCommand(id, _deviceList, date);
+            default:
+                return null;
+        }
+    }
+
     private static SelectDeviceTypeOp selectDeviceTypeMenu() {
         String help = getSelectDeviceTypeMenuHelp();
         System.out.println(help);
@@ -286,7 +327,8 @@ public class Main {
         return  "\nSelect device type:\n" +
                 SelectDeviceTypeOp.SDT_LAMP.getCmd()    + " - lamp"     + "\n" +
                 SelectDeviceTypeOp.SDT_FRIDGE.getCmd()  + " - fridge"   + "\n" +
-                SelectDeviceTypeOp.SDT_STOVE.getCmd()   + " - stove";
+                SelectDeviceTypeOp.SDT_STOVE.getCmd()   + " - stove"    + "\n" +
+                SelectDeviceTypeOp.SDT_TV.getCmd()      + " - tv";
     }
 
     private static String getSelectDeviceIdMenuHelp() {
@@ -328,5 +370,15 @@ public class Main {
                 StoveMenuOp.UM_STOVE_TURN_OFF.getCmd()          + " - turn off"                 + "\n" +
                 StoveMenuOp.UM_STOVE_TURN_ON_BURNER.getCmd()    + " - turn specific burner on"  + "\n" +
                 StoveMenuOp.UM_STOVE_TURN_OFF_BURNER.getCmd()   + " - turn specific burner off";
+    }
+
+    private static String getTVMenuHelp() {
+        return  "\nWhat do you want to change?\n" +
+                TVMenuOp.UM_TV_TURN_ON.getCmd()         + " - turn on"          + "\n" +
+                TVMenuOp.UM_TV_TURN_OFF.getCmd()        + " - turn off"         + "\n" +
+                TVMenuOp.UM_TV_NEXT_CHANNEL.getCmd()    + " - next channel"     + "\n" +
+                TVMenuOp.UM_TV_PREV_CHANNEL.getCmd()    + " - prev channel"     + "\n" +
+                TVMenuOp.UM_TV_SCHED_TURN_ON.getCmd()   + " - schedule turn on" + "\n" +
+                TVMenuOp.UM_TV_SCHED_TURN_OFF.getCmd()  + " - schedule turn off";
     }
 }

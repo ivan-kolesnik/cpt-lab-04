@@ -3,6 +3,7 @@ package com.lab_04.operation;
 import com.lab_04.device.Lamp;
 import com.lab_04.device.Fridge;
 import com.lab_04.device.Stove;
+import com.lab_04.device.TV;
 
 import java.util.Arrays;
 
@@ -55,6 +56,22 @@ public class PrintDeviceOperation implements DeviceOperation {
                 str += "\n";
             }
         }
+
+        System.out.println(str);
+    }
+
+    @Override
+    public void visitTV(TV tv) {
+        String[] arr = tv.getChannelArr();
+        String channelArrStr = Arrays.toString(arr);
+
+        String str =
+                "\nTV (id = " + tv.getId() + ").\n" +
+                        "Manufacturer:    " + tv.getManufacturer()  + "\n" +
+                        "Model:           " + tv.getModel()         + "\n" +
+                        "Channel list:    " + channelArrStr         + "\n" +
+                        "Is turn on?:     " + tv.isTurnOn()         + "\n" +
+                        "Current channel: " + tv.getCurrentChannel();
 
         System.out.println(str);
     }

@@ -2,6 +2,8 @@ package com.lab_04.operation;
 
 import com.lab_04.device.Lamp;
 import com.lab_04.device.Fridge;
+import com.lab_04.device.Stove;
+
 import java.util.Arrays;
 
 public class PrintDeviceOperation implements DeviceOperation {
@@ -33,7 +35,26 @@ public class PrintDeviceOperation implements DeviceOperation {
                 "Min temperature:     " + fridge.getMinTemperature()    + "\n" +
                 "Max temperature:     " + fridge.getMaxTemperature()    + "\n" +
                 "Is turn on?:         " + fridge.isTurnOn()             + "\n" +
-                "Current temperature: " + fridge.getTemperature()       + "\n";
+                "Current temperature: " + fridge.getTemperature();
+
+        System.out.println(str);
+    }
+
+    @Override
+    public void visitStove(Stove stove) {
+        String str =
+                "\nStove (id = " + stove.getId() + ").\n" +
+                "Manufacturer:        " + stove.getManufacturer()      + "\n" +
+                "Model:               " + stove.getModel()             + "\n" +
+                "Is turn on?:         " + stove.isTurnOn()             + "\n";
+
+        int burnersCount = stove.getBurnersCount();
+        for (int i = 0; i < burnersCount; i += 1) {
+            str += "Is burner " + i + " on?:     " + stove.isBurnerTurnOn(i);
+            if (i != burnersCount - 1) {
+                str += "\n";
+            }
+        }
 
         System.out.println(str);
     }

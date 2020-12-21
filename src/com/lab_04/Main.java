@@ -7,6 +7,7 @@ import com.lab_04.command.Program.*;
 import com.lab_04.command.Device.*;
 import com.lab_04.command.Lamp.*;
 import com.lab_04.command.Fridge.*;
+import com.lab_04.command.Stove.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -90,6 +91,7 @@ public class Main {
         return switch (op) {
             case SDT_LAMP   -> new CreateLampCommand(_in, _deviceList);
             case SDT_FRIDGE -> new CreateFridgeCommand(_in, _deviceList);
+            case SDT_STOVE -> new CreateStoveCommand(_in, _deviceList);
             default -> null;
         };
     }
@@ -122,6 +124,7 @@ public class Main {
         return switch (op) {
             case SDT_LAMP   -> updateLampMenu(id);
             case SDT_FRIDGE -> updateFridgeMenu(id);
+            case SDT_STOVE -> updateStoveMenu(id);
             default -> null;
         };
     }
@@ -191,6 +194,32 @@ public class Main {
         };
     }
 
+    private static Command updateStoveMenu(int id) {
+        String help = getStoveMenuHelp();
+        System.out.println(help);
+
+        int choice = _in.nextInt();
+        _in.nextLine();
+
+        StoveMenuOp op = StoveMenuOp.fromCmd(choice);
+        int burnerId;
+
+        switch (op) {
+            case UM_STOVE_TURN_ON:
+                return new DeviceTurnOnCommand(id, _deviceList);
+            case UM_STOVE_TURN_OFF:
+                return new DeviceTurnOffCommand(id, _deviceList);
+            case UM_STOVE_TURN_ON_BURNER:
+                burnerId = selectStoveBurnerIndexMenu();
+                return new StoveTurnOnBurnerCommand(id, _deviceList, burnerId);
+            case UM_STOVE_TURN_OFF_BURNER:
+                burnerId = selectStoveBurnerIndexMenu();
+                return new StoveTurnOffBurnerCommand(id, _deviceList, burnerId);
+            default:
+                return null;
+        }
+    }
+
     private static SelectDeviceTypeOp selectDeviceTypeMenu() {
         String help = getSelectDeviceTypeMenuHelp();
         System.out.println(help);
@@ -205,10 +234,10 @@ public class Main {
         String help = getSelectDeviceIdMenuHelp();
         System.out.println(help);
 
-        int choice = _in.nextInt();
+        int id = _in.nextInt();
         _in.nextLine();
 
-        return choice;
+        return id;
     }
 
     private static Date selectDateMenu() {
@@ -225,6 +254,16 @@ public class Main {
         }
 
         return date;
+    }
+
+    private static int selectStoveBurnerIndexMenu() {
+        String help = getSelectStoveBurnerIndexMenuHelp();
+        System.out.println(help);
+
+        int index = _in.nextInt();
+        _in.nextLine();
+
+        return index;
     }
 
     private static String getMainMenuHelp() {
@@ -246,7 +285,8 @@ public class Main {
     private static String getSelectDeviceTypeMenuHelp() {
         return  "\nSelect device type:\n" +
                 SelectDeviceTypeOp.SDT_LAMP.getCmd()    + " - lamp"     + "\n" +
-                SelectDeviceTypeOp.SDT_FRIDGE.getCmd()  + " - fridge";
+                SelectDeviceTypeOp.SDT_FRIDGE.getCmd()  + " - fridge"   + "\n" +
+                SelectDeviceTypeOp.SDT_STOVE.getCmd()   + " - stove";
     }
 
     private static String getSelectDeviceIdMenuHelp() {
@@ -256,6 +296,10 @@ public class Main {
     private static String getSelectDateMenuHelp() {
         return  "\nEnter date in format MM-dd-yyyy HH:mm:ss.\n" +
                 "(eg: 12-20-2020 22:59:37):";
+    }
+
+    private static String getSelectStoveBurnerIndexMenuHelp() {
+        return  "\nEnter burner index:";
     }
 
     private static String getLampMenuHelp() {
@@ -276,5 +320,13 @@ public class Main {
                 FridgeMenuOp.UM_FRIDGE_TURN_OFF.getCmd()        + " - turn off"                 + "\n" +
                 FridgeMenuOp.UM_FRIDGE_INC_TEMPERATURE.getCmd() + " - increment temperature"    + "\n" +
                 FridgeMenuOp.UM_FRIDGE_DEC_TEMPERATURE.getCmd() + " - decrement temperature";
+    }
+
+    private static String getStoveMenuHelp() {
+        return  "\nWhat do you want to change?\n" +
+                StoveMenuOp.UM_STOVE_TURN_ON.getCmd()           + " - turn on"                  + "\n" +
+                StoveMenuOp.UM_STOVE_TURN_OFF.getCmd()          + " - turn off"                 + "\n" +
+                StoveMenuOp.UM_STOVE_TURN_ON_BURNER.getCmd()    + " - turn specific burner on"  + "\n" +
+                StoveMenuOp.UM_STOVE_TURN_OFF_BURNER.getCmd()   + " - turn specific burner off";
     }
 }

@@ -9,6 +9,7 @@ import com.lab_04.command.Lamp.*;
 import com.lab_04.command.Fridge.*;
 import com.lab_04.command.Stove.*;
 import com.lab_04.command.TV.*;
+import com.lab_04.command.AC.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -23,23 +24,27 @@ public class Main {
     private static SimpleDateFormat _dateFormat = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
 
     public static void main(String[] args) {
+        _deviceList = new LinkedList<Device>();
+
+        // prepopulate _deviceList with data
+
         Lamp lamp1 = new Lamp.Builder()
-                .setManufacturer("Manufacturer 1")
-                .setModel("Model 1")
+                .setManufacturer("FunDesk")
+                .setModel("L5")
                 .setMinBrightness(10)
                 .setMaxBrightness(200)
                 .setColorTemperatureArr(new int[] { 2500, 3200, 3800, 4100, 4500 })
                 .build();
 
         Lamp lamp2 = new Lamp.Builder()
-                .setManufacturer("Manufacturer 2")
-                .setModel("Model 2")
+                .setManufacturer("Nuos")
+                .setModel("S5")
                 .setMinBrightness(50)
                 .setMaxBrightness(300)
                 .setColorTemperatureArr(new int[] { 3200, 4100, 5000 })
                 .build();
 
-        _deviceList = new LinkedList<Device>();
+
         _deviceList.add(lamp1);
         _deviceList.add(lamp2);
 
@@ -94,6 +99,7 @@ public class Main {
             case SDT_FRIDGE -> new CreateFridgeCommand(_in, _deviceList);
             case SDT_STOVE  -> new CreateStoveCommand(_in, _deviceList);
             case SDT_TV     -> new CreateTVCommand(_in, _deviceList);
+            case SDT_AC     -> new CreateACCommand(_in, _deviceList);
             default -> null;
         };
     }
@@ -128,6 +134,7 @@ public class Main {
             case SDT_FRIDGE -> updateFridgeMenu(id);
             case SDT_STOVE  -> updateStoveMenu(id);
             case SDT_TV     -> updateTVMenu(id);
+            case SDT_AC     -> updateACMenu(id);
             default -> null;
         };
     }
@@ -261,6 +268,48 @@ public class Main {
         }
     }
 
+    private static Command updateACMenu(int id) {
+        String help = getACMenuHelp();
+        System.out.println(help);
+
+        int choice = _in.nextInt();
+        _in.nextLine();
+
+        ACMenuOp op = ACMenuOp.fromCmd(choice);
+        Date date;
+
+        switch (op) {
+            case UM_AC_TURN_ON:
+                return new DeviceTurnOnCommand(id, _deviceList);
+            case UM_AC_TURN_OFF:
+                return new DeviceTurnOffCommand(id, _deviceList);
+            case UM_AC_INC_TEMPERATURE:
+                return new ACIncrementTemperatureCommand(id, _deviceList);
+            case UM_AC_DEC_TEMPERATURE:
+                return new ACDecrementTemperatureCommand(id, _deviceList);
+            case UM_AC_INC_AIR_FLOW:
+                return new ACIncrementAirFlowCommand(id, _deviceList);
+            case UM_AC_DEC_AIR_FLOW:
+                return new ACDecrementAirFlowCommand(id, _deviceList);
+            case UM_AC_SCHED_TURN_ON:
+                date = selectDateMenu();
+                if (date == null) {
+                    return null;
+                }
+
+                return new DeviceScheduledTurnOnCommand(id, _deviceList, date);
+            case UM_AC_SCHED_TURN_OFF:
+                date = selectDateMenu();
+                if (date == null) {
+                    return null;
+                }
+
+                return new DeviceScheduledTurnOffCommand(id, _deviceList, date);
+            default:
+                return null;
+        }
+    }
+
     private static SelectDeviceTypeOp selectDeviceTypeMenu() {
         String help = getSelectDeviceTypeMenuHelp();
         System.out.println(help);
@@ -328,7 +377,8 @@ public class Main {
                 SelectDeviceTypeOp.SDT_LAMP.getCmd()    + " - lamp"     + "\n" +
                 SelectDeviceTypeOp.SDT_FRIDGE.getCmd()  + " - fridge"   + "\n" +
                 SelectDeviceTypeOp.SDT_STOVE.getCmd()   + " - stove"    + "\n" +
-                SelectDeviceTypeOp.SDT_TV.getCmd()      + " - tv";
+                SelectDeviceTypeOp.SDT_TV.getCmd()      + " - tv"       + "\n" +
+                SelectDeviceTypeOp.SDT_AC.getCmd()      + " - ac";
     }
 
     private static String getSelectDeviceIdMenuHelp() {
@@ -380,5 +430,17 @@ public class Main {
                 TVMenuOp.UM_TV_PREV_CHANNEL.getCmd()    + " - prev channel"     + "\n" +
                 TVMenuOp.UM_TV_SCHED_TURN_ON.getCmd()   + " - schedule turn on" + "\n" +
                 TVMenuOp.UM_TV_SCHED_TURN_OFF.getCmd()  + " - schedule turn off";
+    }
+
+    private static String getACMenuHelp() {
+        return  "\nWhat do you want to change?\n" +
+                ACMenuOp.UM_AC_TURN_ON.getCmd()         + " - turn on"                  + "\n" +
+                ACMenuOp.UM_AC_TURN_OFF.getCmd()        + " - turn off"                 + "\n" +
+                ACMenuOp.UM_AC_INC_TEMPERATURE.getCmd() + " - increment temperature"    + "\n" +
+                ACMenuOp.UM_AC_DEC_TEMPERATURE.getCmd() + " - decrement temperature"    + "\n" +
+                ACMenuOp.UM_AC_INC_AIR_FLOW.getCmd()    + " - increment air flow"       + "\n" +
+                ACMenuOp.UM_AC_DEC_AIR_FLOW.getCmd()    + " - decrement air flow"       + "\n" +
+                ACMenuOp.UM_AC_SCHED_TURN_ON.getCmd()   + " - schedule turn on"         + "\n" +
+                ACMenuOp.UM_AC_SCHED_TURN_OFF.getCmd()  + " - schedule turn off";
     }
 }

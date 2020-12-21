@@ -4,6 +4,7 @@ import com.lab_04.device.Lamp;
 import com.lab_04.device.Fridge;
 import com.lab_04.device.Stove;
 import com.lab_04.device.TV;
+import com.lab_04.device.AC;
 
 import java.util.Arrays;
 
@@ -67,11 +68,28 @@ public class PrintDeviceOperation implements DeviceOperation {
 
         String str =
                 "\nTV (id = " + tv.getId() + ").\n" +
-                        "Manufacturer:    " + tv.getManufacturer()  + "\n" +
-                        "Model:           " + tv.getModel()         + "\n" +
-                        "Channel list:    " + channelArrStr         + "\n" +
-                        "Is turn on?:     " + tv.isTurnOn()         + "\n" +
-                        "Current channel: " + tv.getCurrentChannel();
+                "Manufacturer:    " + tv.getManufacturer()  + "\n" +
+                "Model:           " + tv.getModel()         + "\n" +
+                "Channel list:    " + channelArrStr         + "\n" +
+                "Is turn on?:     " + tv.isTurnOn()         + "\n" +
+                "Current channel: " + tv.getCurrentChannel();
+
+        System.out.println(str);
+    }
+
+    @Override
+    public void visitAC(AC ac) {
+        String str =
+                "\nAC (id = " + ac.getId() + ").\n" +
+                "Manufacturer:        " + ac.getManufacturer()      + "\n" +
+                "Model:               " + ac.getModel()             + "\n" +
+                "Min temperature:     " + ac.getMinTemperature()    + "\n" +
+                "Max temperature:     " + ac.getMaxTemperature()    + "\n" +
+                "Min air flow:        " + ac.getMinAirFlow()        + "\n" +
+                "Max air flow:        " + ac.getMaxAirFlow()        + "\n" +
+                "Is turn on?:         " + ac.isTurnOn()             + "\n" +
+                "Current temperature: " + ac.getTemperature()       + "\n" +
+                "Current air flow:    " + ac.getAirFlow();
 
         System.out.println(str);
     }

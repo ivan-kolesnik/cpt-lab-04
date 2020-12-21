@@ -5,8 +5,9 @@ public enum SelectDeviceTypeOp {
     SDT_FRIDGE    (1),
     SDT_STOVE     (2),
     SDT_TV        (3),
+    SDT_AC        (4),
 
-    SDT_NOT_FOUND (4);
+    SDT_NOT_FOUND (5);
 
     private final int _cmd;
 
